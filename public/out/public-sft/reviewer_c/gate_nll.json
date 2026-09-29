@@ -1,0 +1,82 @@
+[
+ {
+  "application": 1,
+  "mean_gate": 0.4063984453678131,
+  "mean_update": 0.2417953908443451,
+  "mean_dnll": 0.333260715007782,
+  "rho_gate_dnll": 0.24113902508436363,
+  "rho_update_dnll": 0.29766697865647385,
+  "rho_gate_difficulty": 0.33859313183915885,
+  "rho_dnll_difficulty": 0.058563107006826993
+ },
+ {
+  "application": 2,
+  "mean_gate": 0.42386531829833984,
+  "mean_update": 0.24444520473480225,
+  "mean_dnll": 0.19476865231990814,
+  "rho_gate_dnll": 0.1997042371642449,
+  "rho_update_dnll": 0.24156985624871077,
+  "rho_gate_difficulty": 0.34658497590320536,
+  "rho_dnll_difficulty": 0.05353868872494039
+ },
+ {
+  "application": 3,
+  "mean_gate": 0.46188005805015564,
+  "mean_update": 0.24501194059848785,
+  "mean_dnll": 0.10897322744131088,
+  "rho_gate_dnll": 0.13457136305075038,
+  "rho_update_dnll": 0.1366051785984045,
+  "rho_gate_difficulty": 0.35276578519473784,
+  "rho_dnll_difficulty": 0.05969378494318283
+ },
+ {
+  "application": 4,
+  "mean_gate": 0.501154899597168,
+  "mean_update": 0.2224614918231964,
+  "mean_dnll": 0.06697707623243332,
+  "rho_gate_dnll": 0.05923927545659587,
+  "rho_update_dnll": 0.06167796067924543,
+  "rho_gate_difficulty": 0.35225480888106814,
+  "rho_dnll_difficulty": 0.07350088187303581
+ },
+ {
+  "application": 5,
+  "mean_gate": 0.6037749648094177,
+  "mean_update": 0.29665297269821167,
+  "mean_dnll": 0.2650218605995178,
+  "rho_gate_dnll": 0.06403517813024019,
+  "rho_update_dnll": -0.028665015947293288,
+  "rho_gate_difficulty": 0.16228324647817993,
+  "rho_dnll_difficulty": 0.15258543059120788
+ },
+ {
+  "application": 6,
+  "mean_gate": 0.6888899207115173,
+  "mean_update": 0.43404361605644226,
+  "mean_dnll": 0.16971781849861145,
+  "rho_gate_dnll": 0.042199933216417684,
+  "rho_update_dnll": -0.05421619028277122,
+  "rho_gate_difficulty": -0.027046146694863077,
+  "rho_dnll_difficulty": 0.1270614552748565
+ },
+ {
+  "application": 7,
+  "mean_gate": 0.7026097178459167,
+  "mean_update": 0.5736128091812134,
+  "mean_dnll": 0.14736643433570862,
+  "rho_gate_dnll": 0.018958019154194546,
+  "rho_update_dnll": -0.037992244710242006,
+  "rho_gate_difficulty": 0.01327057168218574,
+  "rho_dnll_difficulty": 0.08425099439884082
+ },
+ {
+  "application": 8,
+  "mean_gate": 0.7299067378044128,
+  "mean_update": 0.43118083477020264,
+  "mean_dnll": 0.0428524948656559,
+  "rho_gate_dnll": 0.018031384810023997,
+  "rho_update_dnll": -0.02475225211471254,
+  "rho_gate_difficulty": 0.05430539287510879,
+  "rho_dnll_difficulty": -0.027796855148047583
+ }
+]

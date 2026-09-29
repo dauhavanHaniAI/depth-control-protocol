@@ -1,0 +1,51 @@
+{
+ "gpu": "NVIDIA GeForce RTX 3090",
+ "batch": [
+  8,
+  1024
+ ],
+ "results": {
+  "prefix1": {
+   "applications": 1,
+   "ms_median": 342.404299415648,
+   "tokens_per_s": 23924.933226541205,
+   "peak_mem_gb": 3.568957952
+  },
+  "prefix4": {
+   "applications": 4,
+   "ms_median": 420.8665471524,
+   "tokens_per_s": 19464.60239101302,
+   "peak_mem_gb": 3.569778176
+  },
+  "repeat1": {
+   "applications": 8,
+   "ms_median": 523.4489692375064,
+   "tokens_per_s": 15650.045145629114,
+   "peak_mem_gb": 3.569778176
+  },
+  "repeat4": {
+   "applications": 8,
+   "ms_median": 525.3637032583356,
+   "tokens_per_s": 15593.007185674895,
+   "peak_mem_gb": 3.569778176
+  },
+  "suffix4": {
+   "applications": 4,
+   "ms_median": 423.22326358407736,
+   "tokens_per_s": 19356.2138589118,
+   "peak_mem_gb": 3.569778176
+  },
+  "full": {
+   "applications": 8,
+   "ms_median": 528.5865655168891,
+   "tokens_per_s": 15497.93455682947,
+   "peak_mem_gb": 3.569778176
+  },
+  "extend16": {
+   "applications": 16,
+   "ms_median": 740.59531185776,
+   "tokens_per_s": 11061.371667949972,
+   "peak_mem_gb": 3.569778176
+  }
+ }
+}

@@ -53,7 +53,7 @@ class Model:
         return self._cache[name]
 
     def ref(self):
-        return "full" if self.kind == "dense" else "r32"
+        return "r32" if self.kind == "huginn" else "full"
 
     def mild(self):
         """Least truncated prefix configuration (dense) / r16 (huginn)."""

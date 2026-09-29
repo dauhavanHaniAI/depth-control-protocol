@@ -350,7 +350,7 @@ def collect(ad, cfg, toks, device, store_h_idx=None):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--model", required=True)
-    ap.add_argument("--kind", default="dense", choices=["dense", "huginn"])
+    ap.add_argument("--kind", default="dense", choices=["dense", "huginn", "sona"])
     ap.add_argument("--tag", required=True)
     ap.add_argument("--fracs", default="0.25,0.5,0.75,0.86,0.93,1.0")
     ap.add_argument("--steps", default="1,2,4,8,16,32,48,64")
@@ -370,14 +370,33 @@ def main():
     t0 = time.time()
     if args.kind == "huginn":
         install_legacy_tied_weights_shim()
-    tok = AutoTokenizer.from_pretrained(args.model, trust_remote_code=True)
-    model = AutoModelForCausalLM.from_pretrained(args.model, trust_remote_code=True,
-                                                 dtype=getattr(torch, args.dtype)).to(device).eval()
-    ad = Adapter(model, args.kind)
-    # prepend BOS exactly when the tokenizer does so by default
-    first = tok("a").input_ids[0]
-    bos = [first] if tok.bos_token_id is not None and first == tok.bos_token_id else []
-    data = {(d, s): tokenize(tok, load_split(d, s)[:args.n_docs], args.max_len, bos)
+    if args.kind == "sona":
+        import sona_adapter
+        tok, model, step = sona_adapter.load(args.model, device, getattr(torch, args.dtype))
+        ad = sona_adapter.SonaAdapter(model, tok)
+        bos = [tok.bos_token_id]
+        print(f"loaded {args.model} (step {step})", flush=True)
+    else:
+        tok = AutoTokenizer.from_pretrained(args.model, trust_remote_code=True)
+        model = AutoModelForCausalLM.from_pretrained(args.model, trust_remote_code=True,
+                                                     dtype=getattr(torch, args.dtype)).to(device).eval()
+        ad = Adapter(model, args.kind)
+        # prepend BOS exactly when the tokenizer does so by default
+        first = tok("a").input_ids[0]
+        bos = [first] if tok.bos_token_id is not None and first == tok.bos_token_id else []
+
+    def fmt(docs):
+        if args.kind != "sona":
+            return docs
+        # the recurrent model was trained with <problem> ... </problem><think> prompts
+        out = []
+        for d in docs:
+            if d["prompt"]:
+                prob = d["prompt"][len("Problem: "):-len("\nSolution:")]
+                d = {**d, "prompt": f"<problem>\n{prob}\n</problem>\n<think>\n", "text": d["text"].lstrip()}
+            out.append(d)
+        return out
+    data = {(d, s): tokenize(tok, fmt(load_split(d, s)[:args.n_docs]), args.max_len, bos)
             for d in DOMAINS for s in ("eval", "cal")}
     ntok = {k: sum(len(i) - s - 1 for i, s in v) for k, v in data.items()}
     print(f"{args.model} kind={args.kind} tokens={ntok}", flush=True)
@@ -385,7 +404,7 @@ def main():
     cfgs = ad.configs([float(f) for f in args.fracs.split(",")],
                       [int(s) for s in args.steps.split(",")])
     # reference configuration for geometry: full depth (dense) / training mean depth r=32 (huginn)
-    ref_name = "full" if args.kind == "dense" else "r32"
+    ref_name = "r32" if args.kind == "huginn" else "full"
     cfgs = sorted(cfgs, key=lambda c: c[0] != ref_name)
     rng = np.random.default_rng(0)
     geo_idx = {d: torch.tensor(np.sort(rng.choice(ntok[(d, "eval")],
@@ -405,7 +424,7 @@ def main():
             ad.set_plan(cfg["plan"])
         tc = time.time()
         # dynamics on 20 math eval docs
-        ad.dyn = [] if args.kind == "dense" else None
+        ad.dyn = [] if args.kind in ("dense", "sona") else None
         if ad.dyn is not None:
             per_doc = []
             for ids, s in data[("math", "eval")][:20]:

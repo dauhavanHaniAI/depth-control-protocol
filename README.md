@@ -64,6 +64,28 @@ Share of the naive truncation gap that is correctable at the readout (95% paired
 | Pythia-1.4B | 22/24 | 0.714 | 0.0% | 61.6% |
 | OPT-350m | 22/24 | 0.985 | 0.9% | 47.1% |
 
+## Our architecture on a public checkpoint (Appendices D and E)
+
+```
+public/
+  vera_psi.py          model definition of the recurrent architecture
+  sona_adapter.py      runs prefix / repeat / suffix / permuted-index schedules; reproduces the full forward pass exactly
+  sona_dcp.py          decomposition with paired bootstrap, on raw and temperature-calibrated NLL
+  sona_extra.py        equivalence tests (TOST), two-order summaries, length and position strata
+  sona_c.py            readout variants, residual geometry, calibration-set size, gate/NLL analyses
+  sona_factorial.py    2x2 factorial on the first block and temperature-refit bootstrap
+  gsm8k_depth.py       GSM8K accuracy under each execution schedule
+  latency.py           wall-clock cost of each schedule
+  albert_dcp.py        DCP on ALBERT (weight-tied, fixed depth, masked LM)
+  make_*.py            LaTeX tables of the appendices
+  out/public-sft/, out/gsm8k_depth/, out/albert/   results reported in the paper
+```
+
+```bash
+python dcp_public.py --model <CKPT_DIR>/<checkpoint>.pt --kind sona --tag public-sft
+python sona_dcp.py && python sona_extra.py && python sona_c.py
+```
+
 ## Recurrent-model scripts
 
 The scripts in `recurrent/` document the exact execution schedules (`build_plan` in `exp_depth_ablation.py`, which
