@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+# per-token outputs of dcp_public.py (~0.8 GB); regenerate with the scripts
+public/out/**/*.npz
+public/logs/
+*.log
+.DS_Store

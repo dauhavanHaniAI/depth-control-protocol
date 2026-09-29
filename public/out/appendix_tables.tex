@@ -1,0 +1,103 @@
+\begin{table}[t]
+\centering
+\scriptsize\setlength{\tabcolsep}{3pt}
+\begin{tabular}{llrrrrrr}
+\toprule
+Model & $k$ & Gap (nats) & Same-dom.\ $T$ & Cross-dom.\ $T$ & In-sample $T$ & Affine readout & Application \\
+\midrule
+\multicolumn{8}{l}{\emph{Severe truncation ($k \approx L/4$; Huginn $r = 1$ vs.\ $32$)}} \\
+Huginn-0125$^{\ast}$ & $r=1$ & $1.717$ & $0.5$ {\tiny[0.2, 0.7]} & $0.4$ {\tiny[0.3, 0.5]} & $0.5$ {\tiny[0.2, 0.7]} & $5.8$ {\tiny[5.5, 6.1]} & -- \\
+Qwen2.5-Math-1.5B & $7/28$ & $10.272$ & $3.6$ {\tiny[3.3, 3.9]} & $3.2$ {\tiny[2.8, 3.6]} & $3.6$ {\tiny[3.3, 3.9]} & $63.5$ {\tiny[62.7, 64.3]} & $-41.9$ {\tiny[-43.4, -40.5]} \\
+Qwen3-1.7B & $7/28$ & $13.176$ & $19.7$ {\tiny[19.3, 20.1]} & $19.7$ {\tiny[19.4, 20.1]} & $19.7$ {\tiny[19.3, 20.2]} & $69.0$ {\tiny[68.3, 69.8]} & $-34.3$ {\tiny[-36.9, -31.5]} \\
+Qwen2.5-1.5B & $7/28$ & $12.601$ & $17.8$ {\tiny[17.4, 18.2]} & $16.8$ {\tiny[16.5, 17.1]} & $17.8$ {\tiny[17.4, 18.2]} & $66.0$ {\tiny[65.2, 66.9]} & $-23.2$ {\tiny[-24.8, -21.8]} \\
+Qwen2.5-1.5B-Instruct & $7/28$ & $12.548$ & $17.4$ {\tiny[17.0, 17.7]} & $16.4$ {\tiny[16.2, 16.7]} & $17.4$ {\tiny[17.0, 17.7]} & $65.9$ {\tiny[65.1, 66.8]} & $-23.8$ {\tiny[-25.3, -22.3]} \\
+SmolLM2-1.7B & $6/24$ & $26.633$ & $62.1$ {\tiny[61.8, 62.3]} & $62.1$ {\tiny[61.8, 62.3]} & $62.1$ {\tiny[61.8, 62.3]} & $81.7$ {\tiny[81.3, 82.2]} & $10.2$ {\tiny[9.4, 10.9]} \\
+Pythia-1.4B & $6/24$ & $5.898$ & $0.4$ {\tiny[0.3, 0.5]} & $-0.6$ {\tiny[-0.7, -0.6]} & $0.4$ {\tiny[0.3, 0.5]} & $44.1$ {\tiny[43.1, 45.0]} & $-66.8$ {\tiny[-69.6, -64.1]} \\
+OPT-350m (post-LN) & $6/24$ & $8.848$ & $3.4$ {\tiny[3.2, 3.6]} & $1.9$ {\tiny[1.9, 2.0]} & $3.4$ {\tiny[3.2, 3.6]} & $52.6$ {\tiny[51.8, 53.5]} & $-13.7$ {\tiny[-14.7, -12.8]} \\
+\midrule
+\multicolumn{8}{l}{\emph{Mild truncation ($k \approx 0.93L$)}} \\
+Qwen2.5-Math-1.5B & $26/28$ & $0.786$ & $18.7$ {\tiny[16.7, 20.5]} & $18.6$ {\tiny[16.7, 20.3]} & $18.7$ {\tiny[16.7, 20.7]} & $50.9$ {\tiny[49.7, 52.0]} & $-8.1$ {\tiny[-10.3, -6.0]} \\
+Qwen3-1.7B & $26/28$ & $0.557$ & $39.2$ {\tiny[37.0, 41.4]} & $44.6$ {\tiny[42.9, 46.3]} & $39.2$ {\tiny[37.0, 41.3]} & $60.1$ {\tiny[59.3, 61.0]} & $22.8$ {\tiny[20.5, 25.1]} \\
+Qwen2.5-1.5B & $26/28$ & $0.844$ & $27.4$ {\tiny[26.1, 28.6]} & $26.8$ {\tiny[25.1, 28.2]} & $27.4$ {\tiny[26.0, 28.7]} & $56.0$ {\tiny[54.8, 57.2]} & $-3.4$ {\tiny[-6.2, -0.9]} \\
+Qwen2.5-1.5B-Instruct & $26/28$ & $0.864$ & $26.3$ {\tiny[25.1, 27.5]} & $25.8$ {\tiny[24.3, 27.3]} & $26.4$ {\tiny[25.1, 27.6]} & $56.9$ {\tiny[55.6, 58.0]} & $-2.0$ {\tiny[-4.7, 0.7]} \\
+SmolLM2-1.7B & $22/24$ & $2.307$ & $14.0$ {\tiny[13.3, 14.6]} & $11.4$ {\tiny[10.3, 12.5]} & $14.0$ {\tiny[13.3, 14.6]} & $75.4$ {\tiny[74.6, 76.1]} & $9.2$ {\tiny[8.0, 10.3]} \\
+Pythia-1.4B & $22/24$ & $0.714$ & $0.0$ {\tiny[-0.0, 0.1]} & $-0.1$ {\tiny[-0.4, 0.1]} & $0.0$ {\tiny[-0.1, 0.1]} & $61.6$ {\tiny[60.5, 62.7]} & $-12.1$ {\tiny[-14.6, -9.5]} \\
+OPT-350m (post-LN) & $22/24$ & $0.985$ & $0.9$ {\tiny[0.6, 1.2]} & $-0.0$ {\tiny[-0.1, 0.0]} & $0.9$ {\tiny[0.6, 1.2]} & $47.1$ {\tiny[45.5, 48.7]} & $-37.0$ {\tiny[-40.0, -34.1]} \\
+\bottomrule
+\end{tabular}
+\caption{Public models, mathematical (MATH solutions) text. Temperature-correctable share (\%) of the naive gap under four recalibrations of the truncated configuration, and the application-count contrast (dense models, prefix($k$) vs.\ repeat($k$)). Calibration maps are fitted on $200$ calibration documents disjoint from the $200$ evaluation documents (cross-domain: fitted on the other domain; in-sample: fitted on the evaluation documents). $95\%$ paired document-bootstrap intervals, $2{,}000$ replicates. $^{\ast}$Recurrent, trained with sampled depth; at $r = 16$ its gap to $r = 32$ is below $0.005$~nats, so no mild row is shown.}
+\label{tab:public-math}
+\end{table}
+
+\begin{table}[t]
+\centering
+\scriptsize\setlength{\tabcolsep}{3pt}
+\begin{tabular}{llrrrrrr}
+\toprule
+Model & $k$ & Gap (nats) & Same-dom.\ $T$ & Cross-dom.\ $T$ & In-sample $T$ & Affine readout & Application \\
+\midrule
+\multicolumn{8}{l}{\emph{Severe truncation ($k \approx L/4$; Huginn $r = 1$ vs.\ $32$)}} \\
+Huginn-0125$^{\ast}$ & $r=1$ & $2.062$ & $0.1$ {\tiny[-0.0, 0.1]} & $-0.1$ {\tiny[-0.2, 0.1]} & $0.1$ {\tiny[0.0, 0.1]} & $1.7$ {\tiny[1.6, 1.8]} & -- \\
+Qwen2.5-Math-1.5B & $7/28$ & $8.258$ & $12.9$ {\tiny[12.6, 13.2]} & $12.3$ {\tiny[12.1, 12.5]} & $12.9$ {\tiny[12.6, 13.2]} & $51.3$ {\tiny[50.7, 51.9]} & $-35.9$ {\tiny[-37.4, -34.4]} \\
+Qwen3-1.7B & $7/28$ & $10.558$ & $25.6$ {\tiny[25.1, 26.1]} & $26.8$ {\tiny[26.2, 27.3]} & $25.6$ {\tiny[25.1, 26.1]} & $58.8$ {\tiny[57.9, 59.7]} & $-60.9$ {\tiny[-62.8, -59.1]} \\
+Qwen2.5-1.5B & $7/28$ & $8.252$ & $21.1$ {\tiny[20.7, 21.5]} & $19.0$ {\tiny[18.5, 19.5]} & $21.1$ {\tiny[20.7, 21.5]} & $46.8$ {\tiny[46.3, 47.4]} & $-69.5$ {\tiny[-71.8, -67.4]} \\
+Qwen2.5-1.5B-Instruct & $7/28$ & $8.223$ & $21.1$ {\tiny[20.7, 21.5]} & $19.0$ {\tiny[18.5, 19.5]} & $21.1$ {\tiny[20.7, 21.5]} & $46.9$ {\tiny[46.3, 47.5]} & $-69.4$ {\tiny[-71.5, -67.2]} \\
+SmolLM2-1.7B & $6/24$ & $22.571$ & $62.7$ {\tiny[62.4, 63.0]} & $62.7$ {\tiny[62.4, 63.0]} & $62.7$ {\tiny[62.4, 63.0]} & $76.6$ {\tiny[76.2, 77.0]} & $4.5$ {\tiny[4.0, 5.0]} \\
+Pythia-1.4B & $6/24$ & $4.778$ & $0.2$ {\tiny[0.2, 0.3]} & $-1.0$ {\tiny[-1.0, -0.9]} & $0.2$ {\tiny[0.2, 0.3]} & $25.5$ {\tiny[24.8, 26.1]} & $-77.1$ {\tiny[-78.9, -75.4]} \\
+OPT-350m (post-LN) & $6/24$ & $6.801$ & $0.6$ {\tiny[0.5, 0.7]} & $-1.3$ {\tiny[-1.6, -1.0]} & $0.6$ {\tiny[0.5, 0.7]} & $40.6$ {\tiny[39.6, 41.4]} & $-20.6$ {\tiny[-21.6, -19.6]} \\
+\midrule
+\multicolumn{8}{l}{\emph{Mild truncation ($k \approx 0.93L$)}} \\
+Qwen2.5-Math-1.5B & $26/28$ & $1.814$ & $18.8$ {\tiny[17.7, 20.0]} & $18.8$ {\tiny[17.6, 20.0]} & $18.8$ {\tiny[17.7, 20.0]} & $41.8$ {\tiny[40.6, 42.9]} & $-2.5$ {\tiny[-3.5, -1.6]} \\
+Qwen3-1.7B & $26/28$ & $1.332$ & $49.6$ {\tiny[48.0, 51.1]} & $60.1$ {\tiny[57.9, 62.4]} & $49.6$ {\tiny[48.0, 51.1]} & $62.9$ {\tiny[62.0, 63.8]} & $24.0$ {\tiny[23.0, 25.1]} \\
+Qwen2.5-1.5B & $26/28$ & $1.768$ & $40.4$ {\tiny[38.8, 41.9]} & $39.3$ {\tiny[38.0, 40.6]} & $40.4$ {\tiny[38.8, 41.9]} & $54.9$ {\tiny[53.9, 56.0]} & $0.1$ {\tiny[-1.3, 1.4]} \\
+Qwen2.5-1.5B-Instruct & $26/28$ & $1.737$ & $39.2$ {\tiny[37.6, 40.7]} & $38.3$ {\tiny[36.9, 39.6]} & $39.2$ {\tiny[37.6, 40.8]} & $54.2$ {\tiny[53.2, 55.2]} & $-1.5$ {\tiny[-3.0, -0.1]} \\
+SmolLM2-1.7B & $22/24$ & $3.692$ & $26.3$ {\tiny[25.5, 27.1]} & $24.3$ {\tiny[23.7, 24.9]} & $26.3$ {\tiny[25.5, 27.1]} & $58.5$ {\tiny[57.4, 59.5]} & $1.2$ {\tiny[0.3, 2.2]} \\
+Pythia-1.4B & $22/24$ & $1.179$ & $0.7$ {\tiny[0.4, 0.9]} & $0.4$ {\tiny[0.3, 0.5]} & $0.7$ {\tiny[0.4, 0.9]} & $52.6$ {\tiny[51.8, 53.4]} & $-11.8$ {\tiny[-13.1, -10.5]} \\
+OPT-350m (post-LN) & $22/24$ & $0.677$ & $-0.1$ {\tiny[-0.2, -0.1]} & $-1.9$ {\tiny[-2.1, -1.6]} & $-0.1$ {\tiny[-0.2, -0.1]} & $13.2$ {\tiny[12.1, 14.4]} & $-27.9$ {\tiny[-29.4, -26.4]} \\
+\bottomrule
+\end{tabular}
+\caption{Public models, general (FineWeb) text. Temperature-correctable share (\%) of the naive gap under four recalibrations of the truncated configuration, and the application-count contrast (dense models, prefix($k$) vs.\ repeat($k$)). Calibration maps are fitted on $200$ calibration documents disjoint from the $200$ evaluation documents (cross-domain: fitted on the other domain; in-sample: fitted on the evaluation documents). $95\%$ paired document-bootstrap intervals, $2{,}000$ replicates. $^{\ast}$Recurrent, trained with sampled depth; at $r = 16$ its gap to $r = 32$ is below $0.005$~nats, so no mild row is shown.}
+\label{tab:public-web}
+\end{table}
+
+\begin{table}[t]
+\centering
+\scriptsize\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lrrrrrrr}
+\toprule
+Model & $T$ range & ECE raw / $T$ / affine & $\cos(z, z_{\text{ref}})$ & CKA$(h, h_{\text{ref}})$ & $\|h\|/\|h_{\text{ref}}\|$ prefix & $\|h\|/\|h_{\text{ref}}\|$ repeat & Fr\'echet \\
+\midrule
+Huginn-0125$^{\ast}$ & $0.95$--$1.07$ & $0.065 / 0.043 / 0.049$ & $0.42$ & $0.78$ & -- & -- & $0.23$ \\
+Qwen2.5-Math-1.5B & $1.04$--$1.46$ & $0.088 / 0.024 / 0.040$ & $0.12$ & $0.41$ & $0.11$ & $4.47$ & $2.83$ \\
+Qwen3-1.7B & $1.37$--$2.97$ & $0.131 / 0.002 / 0.052$ & $0.12$ & $0.28$ & $0.02$ & $3.39$ & $2.84$ \\
+Qwen2.5-1.5B & $1.00$--$2.48$ & $0.227 / 0.009 / 0.018$ & $0.18$ & $0.46$ & $0.13$ & $4.72$ & $2.60$ \\
+Qwen2.5-1.5B-Instruct & $1.03$--$2.48$ & $0.222 / 0.008 / 0.021$ & $0.18$ & $0.46$ & $0.14$ & $4.84$ & $2.43$ \\
+SmolLM2-1.7B & $1.01$--$4.87$ & $0.686 / 0.000 / 0.094$ & $0.11$ & $0.02$ & $0.05$ & $24.95$ & $2.22$ \\
+Pythia-1.4B & $0.94$--$1.22$ & $0.039 / 0.031 / 0.036$ & $0.13$ & $0.37$ & $0.32$ & $1.92$ & $1.62$ \\
+OPT-350m (post-LN) & $0.81$--$1.82$ & $0.010 / 0.002 / 0.017$ & $0.19$ & $0.40$ & $0.99$ & $0.99$ & $1.20$ \\
+\bottomrule
+\end{tabular}
+\caption{Readout-side measurements at the severe truncation of Table~\ref{tab:public-math} (mathematical text). $T$ range: fitted temperature over all prefix depths and full depth. ECE: $15$-bin expected calibration error of the top-1 prediction before and after recalibration. $z$: input to the readout (after the final normalization); $h$: residual stream before the final normalization; the reference is the full-depth model (Huginn: $r = 32$) on the same tokens. Fr\'echet: distance between Gaussian fits of $h$ and $h_{\text{ref}}$ in the top-$64$ principal subspace of $h_{\text{ref}}$, normalized by the reference total variance. Huginn's residual norm is fixed by its sandwich normalization, and OPT-350m is post-LN, so norm ratios are uninformative for them.}
+\label{tab:public-geometry}
+\end{table}
+
+\begin{table}[t]
+\centering
+\scriptsize
+\begin{tabular}{rrrrrrrrr}
+\toprule
+$r$ & NLL & NLL, $T$ & NLL, affine & $T$ (math) & $T$ (web) & ECE & $\cos(z, z_{32})$ & CKA$(h, h_{32})$ \\
+\midrule
+$1$ & $2.3689$ & $2.3605$ & $2.2659$ & $1.058$ & $1.028$ & $0.065$ & $0.42$ & $0.78$ \\
+$2$ & $1.6420$ & $1.6337$ & $1.6047$ & $1.066$ & $0.989$ & $0.063$ & $0.53$ & $0.84$ \\
+$4$ & $1.0554$ & $1.0530$ & $1.0474$ & $0.951$ & $0.990$ & $0.011$ & $0.72$ & $0.91$ \\
+$8$ & $0.7395$ & $0.7384$ & $0.7357$ & $0.959$ & $0.993$ & $0.007$ & $0.92$ & $0.97$ \\
+$16$ & $0.6571$ & $0.6565$ & $0.6535$ & $0.969$ & $1.000$ & $0.004$ & $0.99$ & $1.00$ \\
+$32$ & $0.6522$ & $0.6517$ & $0.6486$ & $0.970$ & $1.001$ & $0.005$ & $1.00$ & $1.00$ \\
+$48$ & $0.6524$ & $0.6519$ & $0.6488$ & $0.971$ & $1.001$ & $0.004$ & $1.00$ & $1.00$ \\
+$64$ & $0.6523$ & $0.6518$ & $0.6488$ & $0.971$ & $1.001$ & $0.004$ & $1.00$ & $1.00$ \\
+\bottomrule
+\end{tabular}
+\caption{Huginn-0125 across recurrence depths, including extrapolation beyond its training mean ($r = 48, 64$). NLL on the $200$ mathematical evaluation documents with disjoint calibration documents. Recalibration changes NLL by at most $0.103$~nats at any depth, and the temperature stays within $0.95$--$1.07$ on both domains.}
+\label{tab:public-huginn}
+\end{table}
