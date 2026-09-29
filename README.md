@@ -81,6 +81,8 @@ public/
   out/public-sft/, out/gsm8k_depth/, out/albert/   results reported in the paper
 ```
 
+The public SFT checkpoint is at [HaniAI/SonaMath-0.5B](https://huggingface.co/HaniAI/SonaMath-0.5B).
+
 ```bash
 python dcp_public.py --model <CKPT_DIR>/<checkpoint>.pt --kind sona --tag public-sft
 python sona_dcp.py && python sona_extra.py && python sona_c.py
