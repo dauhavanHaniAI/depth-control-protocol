@@ -5,17 +5,17 @@ from pathlib import Path
 
 HERE = Path(__file__).parent
 OUT = HERE / "out" / "looped"
-ROWS = [  # tag, model label, training depth schedule
-    ("ifm-s-fixed-r5", "IFM-S (0.3B)", "fixed $R{=}5$"),
-    ("ifm-s-fixed-pln5", "IFM-S (0.3B)", "sampled, mean $5$"),
-    ("ifm-s-learned-entropy0p01", "IFM-S (0.3B)", "learned prior"),
-    ("ifm-m-fixed-r5", "IFM-M", "fixed $R{=}5$"),
-    ("ifm-m-fixed-pln5", "IFM-M", "sampled, mean $5$"),
-    ("ifm-m-learned-entropy0p01", "IFM-M", "learned prior"),
-    ("ifm-l-fixed-r5", "IFM-L", "fixed $R{=}5$"),
-    ("ifm-l-fixed-pln5", "IFM-L", "sampled, mean $5$"),
-    ("ouro-1.4B", "Ouro-1.4B", "every loop read out ($4$)"),
-    ("ouro-2.6B", "Ouro-2.6B", "every loop read out ($4$)"),
+ROWS = [  # tag, model label, training depth support
+    ("ifm-s-fixed-r5", "IFM-S (0.30B)", "$\\{5\\}$"),
+    ("ifm-s-fixed-pln5", "IFM-S (0.30B)", "PLN, mean $5$, $\\le 64$"),
+    ("ifm-s-learned-entropy0p01", "IFM-S (0.30B)", "learned prior"),
+    ("ifm-m-fixed-r5", "IFM-M (0.82B)", "$\\{5\\}$"),
+    ("ifm-m-fixed-pln5", "IFM-M (0.82B)", "PLN, mean $5$, $\\le 64$"),
+    ("ifm-m-learned-entropy0p01", "IFM-M (0.82B)", "learned prior"),
+    ("ifm-l-fixed-r5", "IFM-L (2.49B)", "$\\{5\\}$"),
+    ("ifm-l-fixed-pln5", "IFM-L (2.49B)", "PLN, mean $5$, $\\le 64$"),
+    ("ouro-1.4B", "Ouro-1.4B", "$\\{1,\\dots,4\\}$, every loop read out"),
+    ("ouro-2.6B", "Ouro-2.6B", "$\\{1,\\dots,4\\}$, every loop read out"),
 ]
 
 
@@ -31,16 +31,14 @@ def row(d, label, sched, dom="math"):
     m = d["domains"][dom]
     ref = d["ref_depth"]
     v = m["vs_ref"]["1"]
-    T = {int(k): x for k, x in m["T"].items()}
-    inside = [r for r in T if r <= ref]
-    drift = max(T[r] for r in inside) - min(T[r] for r in inside)
     nll = {int(k): x for k, x in m["nll_raw"].items()}
+    aff_gain_ref = nll[ref] - m["nll_aff"][str(ref)]
     beyond = [r for r in nll if ref < r <= 8]
     ext = max(nll[r] - nll[ref] for r in beyond)
     ci = lambda a: f"{{\\tiny[{100 * a[0]:.1f}, {100 * a[1]:.1f}]}}"
     return (f"{label} & {sched} & ${nll[ref]:.3f}$ & ${v['gap_raw']:.3f}$ & "
             f"${100 * v['temp_share']:.1f}$ {ci(v['temp_share_ci95'])} & "
-            f"${100 * v['affine_share']:.1f}$ {ci(v['affine_share_ci95'])} & ${drift:.3f}$ & ${ext:+.3f}$ \\\\")
+            f"${100 * v['affine_share']:.1f}$ {ci(v['affine_share_ci95'])} & ${aff_gain_ref:.3f}$ & ${ext:+.3f}$ \\\\")
 
 
 def predictions(d):
@@ -72,13 +70,14 @@ def main():
     tex = "\n".join([
         "\\begin{table}[t]", "\\centering", "\\footnotesize\\setlength{\\tabcolsep}{3pt}",
         "\\begin{tabular}{llrrrrrr}", "\\toprule",
-        "Model & Training depth & NLL at $R$ & Gap $r{=}1$ & Temperature (\\%) & Affine (\\%) & $T$ drift & Beyond $R$ \\\\",
+        "Model & Training depths & NLL at $R$ & Gap $r{=}1$ & Temperature (\\%) & Affine (\\%) & Gain at $R$ & Beyond $R$ \\\\",
         "\\midrule", *lines, "\\bottomrule", "\\end{tabular}",
         "\\caption{Externally trained looped models, mathematical text ($200$ evaluation and $200$ disjoint calibration "
         "documents). $R$: training depth ($5$ for IFM, $4$ for Ouro). Gap: NLL at $r = 1$ minus NLL at $R$ (nats). "
         "Temperature and Affine: shares of that gap removed by a depth-specific temperature or affine readout-input map, "
-        "with $95\\%$ paired document-bootstrap intervals ($2{,}000$ replicates). $T$ drift: range of the fitted "
-        "temperature over $r \\le R$. Beyond $R$: largest NLL increase over $R < r \\le 8$. Within each IFM scale, the "
+        "with $95\\%$ paired document-bootstrap intervals ($2{,}000$ replicates); both shares are net of what the same "
+        "probe recovers at $R$. Gain at $R$: NLL removed by the affine probe at the training depth itself (the "
+        "full-depth control). PLN: Poisson-lognormal, capped at $64$. Beyond $R$: largest NLL increase over $R < r \\le 8$. Within each IFM scale, the "
         "fixed and sampled models share architecture, data and token budget \\citep{huang2026fixedpoints}.}",
         "\\label{tab:looped}", "\\end{table}"])
     (OUT / "looped_table.tex").write_text(tex + "\n")
