@@ -13,6 +13,7 @@
     and on temperature-calibrated NLL (temperatures fitted on the disjoint calibration documents).
 (2) Temperature-correctable share of the prefix(1) -> full gap with the temperature REFIT in every bootstrap
     replicate: calibration documents and evaluation documents are both resampled.
+(3) Document-level 5-fold cross-fitting of the temperature over evaluation + calibration documents.
 """
 from __future__ import annotations
 
@@ -100,7 +101,7 @@ def main():
     Zcf, Ycf, Dcf = feats["full"][3:6]
     raw1 = per_doc(W, *feats["prefix1"][0:3], n_e)
     rawf = per_doc(W, *feats["full"][0:3], n_e)
-    shares, T1s, Tfs = [], [], []
+    shares, T1s, Tfs, abs_gaps = [], [], [], []
     for r in range(NR):
         cdocs = torch.tensor(rng.integers(0, n_c, size=n_c))
         edocs = rng.integers(0, n_e, size=n_e) if r > 0 else np.arange(n_e)
@@ -113,15 +114,51 @@ def main():
         q = lambda vc: vc[0][edocs].sum() / vc[1][edocs].sum()
         gap = q(raw1) - q(rawf)
         shares.append((gap - (q(cal1) - q(calf))) / gap)
+        abs_gaps.append(gap - (q(cal1) - q(calf)))
         T1s.append(Ts[0]); Tfs.append(Ts[1])
         if r % 20 == 0:
             print(f"refit bootstrap {r}/{NR} share={shares[-1]:.4f} T1={Ts[0]:.3f} Tf={Ts[1]:.3f}", flush=True)
     sh = np.array(shares)
+    ag = np.array(abs_gaps)
     res["calibration_refit_bootstrap"] = {
         "replicates": NR, "share_point": float(sh[0]),
         "share_ci95": [float(np.percentile(sh[1:], 2.5)), float(np.percentile(sh[1:], 97.5))],
         "T_prefix1_ci95": [float(np.percentile(T1s[1:], 2.5)), float(np.percentile(T1s[1:], 97.5))],
-        "T_full_ci95": [float(np.percentile(Tfs[1:], 2.5)), float(np.percentile(Tfs[1:], 97.5))]}
+        "T_full_ci95": [float(np.percentile(Tfs[1:], 2.5)), float(np.percentile(Tfs[1:], 97.5))],
+        "calib_nats_point": float(ag[0]),
+        "calib_nats_ci95": [float(np.percentile(ag[1:], 2.5)), float(np.percentile(ag[1:], 97.5))]}
+
+    # (3) document-level 5-fold cross-fitting over the union of evaluation and calibration documents:
+    # each document's calibrated NLL uses temperatures fitted only on the other four folds
+    K = 5
+    union = {}
+    for name in ("prefix1", "full"):
+        Ze, Ye, De, Zc, Yc, Dc, _ = feats[name]
+        union[name] = (torch.cat([Ze, Zc]), torch.cat([Ye, Yc]), torch.cat([De, Dc + n_e]))
+    n_u = n_e + n_c
+    fold = np.random.default_rng(1).permutation(n_u) % K
+    raw_u, cal_u, Tcf = {}, {}, {}
+    for name, (Z, Y, D) in union.items():
+        raw_u[name] = per_doc(W, Z, Y, D, n_u)
+        v = np.zeros(n_u); Tcf[name] = []
+        dn = D.numpy()
+        for f in range(K):
+            tr = torch.from_numpy(np.isin(dn, np.nonzero(fold != f)[0]))
+            te_ = np.nonzero(fold == f)[0]
+            T = DP.fit_T(head, Z[tr].to(dev), Y[tr].to(dev)); Tcf[name].append(T)
+            vf, _ = per_doc(W, Z, Y, D, n_u, T=T)
+            v[te_] = vf[te_]
+        cal_u[name] = (v, raw_u[name][1])
+    idx_u = np.vstack([np.arange(n_u)[None], rng.integers(0, n_u, size=(NB, n_u))])
+    Qr = {k: v[0][idx_u].sum(1) / v[1][idx_u].sum(1) for k, v in raw_u.items()}
+    Qc = {k: v[0][idx_u].sum(1) / v[1][idx_u].sum(1) for k, v in cal_u.items()}
+    gap_r = Qr["prefix1"] - Qr["full"]; gap_c = Qc["prefix1"] - Qc["full"]
+    ci = lambda a: [float(np.percentile(a[1:], 2.5)), float(np.percentile(a[1:], 97.5))]
+    res["crossfit"] = {"folds": K, "docs": int(n_u), "T_per_fold": Tcf,
+                       "raw_gap": float(gap_r[0]), "raw_gap_ci95": ci(gap_r),
+                       "calib_nats": float((gap_r - gap_c)[0]), "calib_nats_ci95": ci(gap_r - gap_c),
+                       "calib_share": float(((gap_r - gap_c) / gap_r)[0]), "calib_share_ci95": ci((gap_r - gap_c) / gap_r)}
+    print(res["crossfit"], flush=True)
     print(res["calibration_refit_bootstrap"], flush=True)
     (OUT / "factorial.json").write_text(json.dumps(res, indent=1))
     print("done", time.time() - t0)
