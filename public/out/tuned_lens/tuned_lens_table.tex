@@ -1,0 +1,22 @@
+\begin{table}[t]
+\centering
+\footnotesize\setlength{\tabcolsep}{3pt}
+\begin{tabular}{llrrrrrr}
+\toprule
+& & & Diagonal & \multicolumn{2}{c}{Full-rank translator ($d \times d$)} & & \\
+\cmidrule(lr){5-6}
+Model & Training depth & Gap $r{=}1$ & affine (\%) & NLL objective (\%) & Tuned lens, KL (\%) & Gain at $R$ & Params \\
+\midrule
+IFM-S & fixed & $1.384$ & $19.0$ & $53.2$ {\tiny[51.4, 54.7]} & $59.8$ {\tiny[58.0, 61.6]} & $0.255$ & $2.4$M \\
+IFM-S & sampled & $0.222$ & $1.9$ & $17.5$ {\tiny[14.9, 19.6]} & $36.7$ {\tiny[34.1, 39.4]} & $0.260$ & $2.4$M \\
+IFM-M & fixed & $1.602$ & $13.8$ & $56.3$ {\tiny[54.5, 57.9]} & $59.5$ {\tiny[57.8, 61.2]} & $0.162$ & $9.4$M \\
+IFM-M & sampled & $0.242$ & $2.7$ & $18.5$ {\tiny[15.2, 21.6]} & $27.1$ {\tiny[24.3, 30.1]} & $0.172$ & $9.4$M \\
+IFM-L & fixed & $1.428$ & $13.1$ & $54.1$ {\tiny[52.0, 56.0]} & $56.3$ {\tiny[54.3, 58.1]} & $0.119$ & $37.8$M \\
+IFM-L & sampled & $0.239$ & $1.8$ & $15.4$ {\tiny[11.9, 18.8]} & $15.7$ {\tiny[11.7, 19.5]} & $0.113$ & $37.8$M \\
+Ouro-1.4B & per-loop loss & $0.430$ & $25.0$ & $52.9$ {\tiny[50.8, 54.8]} & $56.0$ {\tiny[54.1, 57.8]} & $0.051$ & $4.2$M \\
+Ouro-2.6B & per-loop loss & $0.270$ & $17.5$ & $42.6$ {\tiny[40.3, 45.0]} & $46.7$ {\tiny[44.4, 49.0]} & $0.032$ & $4.2$M \\
+\bottomrule
+\end{tabular}
+\caption{Linear recoverability of the $r = 1$ truncation gap under probes of increasing capacity, mathematical text. Diagonal affine: the probe of Table~\ref{tab:looped} ($2d$ parameters, fitted on calibration documents). Full-rank translators $h \mapsto h + Ah + b$ act on the state entering the model's own final normalization and readout, are initialized at the identity, and are trained on MATH training solutions (disjoint from the calibration and evaluation documents; Adam, learning rate $10^{-4}$, $8$ documents per step, $2$ epochs), with the checkpoint selected on the calibration documents. NLL objective: next-token loss, full-depth controlled (the translator trained at $R$ is subtracted; its gain at $R$ is listed). Tuned lens: KL to the model's own predictions at $R$, as in \citet{belrose2023tuned}; at $R$ it is the identity. Shares are of the raw gap between $r = 1$ and $R$, with $95\%$ paired document-bootstrap intervals over the $200$ evaluation documents.}
+\label{tab:tunedlens}
+\end{table}
